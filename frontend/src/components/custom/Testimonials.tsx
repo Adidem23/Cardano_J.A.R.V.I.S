@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Hexagon, Heart, Star, ArrowUpRight } from "lucide-react"
 
@@ -173,11 +173,10 @@ export function Testimonials() {
         </h2>
 
         <p className="mt-8 text-base sm:text-lg text-zinc-400 leading-relaxed">
-          See how leading protocols and dApps are scaling their infrastructure
-          with
+          See how leading protocols and dApps are scaling their infrastructure with 
         </p>
         <p className="mt-1 text-base sm:text-lg text-zinc-400">
-          Nebula&apos;s unified layer.
+          JARVIS&apos;s unified layer.
         </p>
       </div>
 
@@ -186,7 +185,7 @@ export function Testimonials() {
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-l from-zinc-700 to-black" />
         <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-zinc-700 to-black" />
         <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-t from-zinc-700 to-black" />
-        
+
         <div className=" w-[45vw] flex flex-col gap-6">
           <Card className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-zinc-950/80 px-8 py-8 sm:px-10 sm:py-10 shadow-[0_24px_80px_rgba(0,0,0,0.75)]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08)_0,transparent_50%),radial-gradient(circle_at_bottom_right,rgba(39,39,42,0.8)_0,transparent_55%)] opacity-60" />
@@ -300,20 +299,21 @@ export function Testimonials() {
       <div className="max-w-[80vw] mx-auto mt-10 flex items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <div className="flex -space-x-2">
-            <Avatar className="h-9 w-9 border border-white/10">
-              <AvatarFallback className="bg-zinc-900 text-[11px] font-semibold text-zinc-100">
-                A1
-              </AvatarFallback>
+            <Avatar>
+              <AvatarImage src="https://github.com/haydenbleasel.png" />
+              <AvatarFallback>HB</AvatarFallback>
             </Avatar>
-            <Avatar className="h-9 w-9 border border-white/10">
-              <AvatarFallback className="bg-zinc-900 text-[11px] font-semibold text-zinc-100">
-                A2
-              </AvatarFallback>
+            <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <Avatar className="h-9 w-9 border border-white/10">
-              <AvatarFallback className="bg-zinc-900 text-[11px] font-semibold text-zinc-100">
-                A3
-              </AvatarFallback>
+            <Avatar>
+              <AvatarImage src="https://github.com/leerob.png" />
+              <AvatarFallback>LR</AvatarFallback>
+            </Avatar>
+            <Avatar>
+              <AvatarImage src="https://github.com/serafimcloud.png" />
+              <AvatarFallback>SC</AvatarFallback>
             </Avatar>
             <div className="h-9 w-9 rounded-full border border-white/10 bg-zinc-900/80 flex items-center justify-center text-xs font-semibold text-zinc-100">
               4.9/5
