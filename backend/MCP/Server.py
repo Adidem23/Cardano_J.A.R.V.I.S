@@ -20,6 +20,17 @@ def openCardanoWallet():
          time.sleep(3)
 
 
+def openMetamaskWallet():
+         pyautogui.press("win")
+         time.sleep(1)
+         pyautogui.typewrite("chrome", interval=0.1)
+         time.sleep(1)
+         pyautogui.press("enter")
+         time.sleep(1)
+         pyautogui.typewrite("chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/tab.html#/wallet", interval=0.05)
+         pyautogui.press("enter")
+         time.sleep(3)
+
 # Send Transaction Starts ----------------------------------------
 
 ASSET_DIR = 'D:\\hp\\Dev\\Cardano_J.A.R.V.I.S\\backend\\assests'
@@ -492,8 +503,5 @@ def AvailablePools():
 @mcp.tool()
 def SearchTransactions(wallletAddr:str):
    return SearchTransactionForAddress(wallletAddr)
-
-
-    
 
 mcp.run(transport="stdio")
