@@ -1,125 +1,339 @@
 import { motion } from "motion/react"
+import {
+  KeyRound,
+  Cpu,
+  Users,
+  MousePointer2,
+  Zap,
+} from "lucide-react"
 import { FeatureFrame } from "./FeatureFrame"
-import { hoverTilt } from "@/components/custom/Features/animation"
 
-export function FeatureCard({
-  delay = 0,
-  index,
-}: {
+type FeatureCardProps = {
   delay?: number
   index: number
-}) {
+}
+
+export function FeatureCard({ delay = 0, index }: FeatureCardProps) {
   return (
     <FeatureFrame delay={delay}>
-      <motion.div
-        initial="rest"
-        whileHover="hover"
-        variants={hoverTilt}
-        transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className="relative w-full h-full aspect-square lg:aspect-video flex items-center justify-center overflow-hidden"
-      >
-        <div className="relative w-64 h-40 bg-[#111]/90 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl flex flex-col p-1 z-10">
-          <div className="flex items-center gap-2 px-3 py-2 border-b border-white/5">
-            <div className="flex gap-1.5">
-              <motion.div 
-                className="w-2.5 h-2.5 rounded-full bg-red-500/40"
-                whileHover={{ scale: 1.2 }}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.div 
-                className="w-2.5 h-2.5 rounded-full bg-yellow-500/40"
-                whileHover={{ scale: 1.2 }}
-                transition={{ duration: 0.3 }}
-              />
-            </div>
-            <div className="w-20 h-1.5 bg-white/5 rounded-full ml-auto" />
-          </div>
+      <div className="relative aspect-square w-full lg:aspect-video flex items-center justify-center p-4">
+        {index === 0 && <SecureVisual />}
+        {index === 1 && <MultiplayerVisual />}
+        {index === 2 && <ProductionVisual />}
+      </div>
+    </FeatureFrame>
+  )
+}
 
-          <div className="flex-1 p-3 grid grid-cols-2 gap-3 relative">
-            <motion.div 
-              className="bg-orange-500/5 border border-orange-500/10 rounded group-hover:bg-orange-500/10 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            />
-            <motion.div 
-              className="bg-purple-500/5 border border-purple-500/10 rounded group-hover:bg-purple-500/10 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            />
+function SecureVisual() {
+  return (
+    <div className="relative w-full max-w-lg rounded-3xl border border-orange-500/30 bg-black/80 px-5 pt-5 pb-6 shadow-[0_0_40px_rgba(249,115,22,0.15),0_0_80px_rgba(249,115,22,0.1)]">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-red-500/80" />
+          <span className="h-2 w-2 rounded-full bg-amber-400/80" />
+          <span className="h-2 w-2 rounded-full bg-emerald-400/80" />
+        </div>
+        <div className="h-1.5 w-16 rounded-full bg-zinc-800" />
+      </div>
+
+      <div className="mt-4 grid grid-cols-[1.1fr_minmax(0,1fr)] gap-4">
+        <div className="relative h-28 rounded-2xl border border-orange-500/40 bg-gradient-to-br from-orange-500/15 via-black to-black overflow-hidden">
+          <div className="absolute inset-3 flex flex-col justify-between text-[10px] text-orange-100/80">
+            <div className="flex items-center justify-between uppercase tracking-[0.2em]">
+              <span className="text-orange-300">Signing Layer</span>
+              <span className="rounded-full bg-orange-500/20 px-2 py-0.5 text-[9px] text-orange-100">
+                Isolated
+              </span>
+            </div>
+            <div className="flex items-end justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="h-1 w-6 rounded-full bg-orange-400/80" />
+                  <span className="h-1 w-10 rounded-full bg-orange-500/70" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="h-1 w-5 rounded-full bg-orange-300/70" />
+                  <span className="h-1 w-7 rounded-full bg-orange-500/50" />
+                </div>
+              </div>
+              <div className="flex flex-col items-end gap-1 text-[9px] text-orange-100/80">
+                <span>Keys locked</span>
+                <span className="flex items-center gap-1 text-[10px] font-semibold text-orange-300">
+                  <KeyRound className="h-3 w-3" />
+                  0 leaks
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <motion.div
-          className="absolute pointer-events-none z-20"
-          animate={{
-            x: ["-20%", "30%", "-10%"],
-            y: ["20%", "-10%", "10%"],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            repeatType: "reverse",
-            ease: "easeInOut",
-          }}
-        >
-          <svg
-            className="w-5 h-5 text-orange-400 drop-shadow-[0_4px_12px_rgba(251,146,60,0.6)]"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            style={{ transform: "rotate(-25deg)" }}
-          >
-            <path d="M5.5 3.21l10.8 5.4a1 1 0 0 1 .16 1.7l-4.2 2.1 2.1 4.2a1 1 0 0 1-1.8.9l-2.1-4.2-4.2 2.1A1 1 0 0 1 4 12.91L5.69 1.8Z" />
-          </svg>
-        </motion.div>
-
-        <motion.div
-          className="absolute bg-neutral-800 border border-white/10 rounded-lg p-3 shadow-xl w-40 text-[11px] text-neutral-300"
-          animate={{
-            x: ["40%", "10%", "50%"],
-            y: ["-20%", "10%", "-10%"],
-            opacity: [0.7, 1, 0.85],
-          }}
-          transition={{
-            duration: 14,
-            repeat: Infinity,
-            repeatType: "mirror",
-            ease: "easeInOut",
-          }}
-        >
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-5 h-5 flex items-center justify-center rounded-full bg-orange-500 font-bold text-[9px] text-black">
-              LG
-            </div>
-            <span className="text-[9px] text-neutral-500">Live</span>
+        <div className="relative flex h-28 flex-col rounded-2xl border border-white/10 bg-zinc-900/80 px-4 py-3 overflow-hidden">
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/5 via-transparent to-transparent opacity-20" />
+          <div className="relative flex items-center justify-between text-[10px] mb-3">
+            <span className="rounded-full bg-zinc-800/80 px-2 py-0.5 text-[9px] uppercase tracking-[0.22em] text-zinc-300">
+              Audit Log
+            </span>
+            <span className="text-[9px] text-zinc-500">
+              Encrypted · Verifiable
+            </span>
           </div>
-          Need this more dynamic?
-          <div className="absolute -bottom-1 left-4 w-3 h-3 bg-neutral-800 border-b border-l border-white/10 rotate-45" />
-        </motion.div>
-      </motion.div>
+          <div className="relative flex flex-col justify-center flex-1 space-y-2.5 text-[10px] text-zinc-300">
+            <div className="flex items-center justify-between">
+              <span>tx_0xf8c2…ab9</span>
+              <span className="text-[9px] text-emerald-400">✓ Signed</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>tx_0x9bd1…413</span>
+              <span className="text-[9px] text-emerald-400">✓ Logged</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>access.audit.json</span>
+              <span className="text-[9px] text-amber-300">Tamper-proof</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center z-30">
-        <div className="flex -space-x-2">
-          <motion.div 
-            className="w-8 h-8 rounded-full border-2 border-[#0A0A0A] bg-orange-500 flex items-center justify-center text-xs font-bold text-black"
-            whileHover={{ scale: 1.1, y: -2 }}
-            transition={{ duration: 0.3 }}
-          >
+      <div className="mt-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 text-xs font-semibold text-black">
             S
-          </motion.div>
-          <motion.div 
-            className="w-8 h-8 rounded-full border-2 border-[#0A0A0A] bg-neutral-700 flex items-center justify-center text-xs font-bold text-white"
-            whileHover={{ scale: 1.1, y: -2 }}
-            transition={{ duration: 0.3 }}
-          >
+          </div>
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-700 text-xs font-semibold text-white">
             J
-          </motion.div>
+          </div>
         </div>
-
-        <div className="px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] uppercase tracking-wider font-mono flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+        <div className="flex items-center gap-2 rounded-full border border-orange-500/50 bg-orange-500/10 px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-orange-200">
+          <span className="h-1.5 w-1.5 rounded-full bg-orange-400" />
           Live
         </div>
       </div>
-    </FeatureFrame>
+    </div>
+  )
+}
+
+function MultiplayerVisual() {
+  return (
+    <motion.div
+      className="relative w-full max-w-xl rounded-3xl border border-purple-500/30 bg-black/80 px-5 py-4 shadow-[0_0_40px_rgba(168,85,247,0.15),0_0_80px_rgba(168,85,247,0.1)]"
+      initial={{ y: 18, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true, amount: 0.4 }}
+      transition={{ duration: 0.75, ease: [0.22, 0.8, 0.35, 1] }}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-red-500/70" />
+          <span className="h-2 w-2 rounded-full bg-yellow-400/80" />
+          <span className="h-2 w-2 rounded-full bg-emerald-400/80" />
+        </div>
+        <div className="h-1.5 w-16 rounded-full bg-zinc-800" />
+      </div>
+
+      <div className="mt-5 grid grid-cols-[1.05fr_minmax(0,1fr)] gap-4">
+        <div className="relative h-28 rounded-2xl border border-zinc-800 bg-zinc-950/80 overflow-hidden">
+          <div className="absolute inset-3 grid grid-cols-2 gap-3">
+            <div className="rounded-xl border border-orange-500/25 bg-orange-500/10" />
+            <div className="rounded-xl border border-purple-500/25 bg-purple-500/10" />
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/80" />
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/80" />
+          </div>
+
+          <motion.div
+            className="pointer-events-none absolute left-10 top-6"
+            animate={{
+              x: [0, 18, 40, 18, 0],
+              y: [0, 10, 0, -6, 0],
+            }}
+            transition={{
+              duration: 4.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            <MousePointer2 className="h-5 w-5 text-orange-400 drop-shadow-[0_0_12px_rgba(249,115,22,0.7)]" />
+          </motion.div>
+
+          <motion.div
+            className="pointer-events-none absolute right-10 top-10"
+            animate={{
+              x: [0, -16, -32, -16, 0],
+              y: [0, -8, 0, 6, 0],
+            }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.5,
+            }}
+          >
+            <MousePointer2 className="h-5 w-5 text-emerald-400 drop-shadow-[0_0_12px_rgba(16,185,129,0.7)]" />
+          </motion.div>
+        </div>
+
+        <div className="relative flex h-28 flex-col justify-between rounded-2xl border border-white/10 bg-zinc-900/90 px-4 py-3">
+          <div className="flex items-center justify-between text-[10px]">
+            <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[9px] uppercase tracking-[0.22em] text-zinc-300">
+              Session
+            </span>
+            <span className="flex items-center gap-1 text-[9px] text-zinc-500">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Live
+            </span>
+          </div>
+          <div className="space-y-1 text-[11px] text-zinc-300">
+            <div className="flex items-center justify-between">
+              <span>State synced</span>
+              <span className="text-[9px] text-emerald-400">✓</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>2 cursors, 1 space</span>
+              <span className="text-[9px] text-zinc-500">Realtime</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <motion.div
+        className="mt-4 flex w-full flex-col gap-2 rounded-2xl border border-white/10 bg-zinc-900/95 px-3 py-2 text-[11px] text-zinc-200"
+        animate={{
+          opacity: [0.7, 1, 0.7],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 0.8,
+        }}
+      >
+        <div className="flex items-center gap-2 text-[10px] text-zinc-400">
+          <Users className="h-3.5 w-3.5 text-orange-400" />
+          <span>Shared space</span>
+        </div>
+        <p className="leading-snug text-[11px]">
+          "Can we move this signer tile to the left?"
+        </p>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+function ProductionVisual() {
+  const progressItems = [
+    { label: "Complex Mesh", reduction: "-82%", finalWidth: "82%" },
+    { label: "Static Props", reduction: "-78%", finalWidth: "78%" },
+  ]
+
+  return (
+    <motion.div
+      className="relative w-full max-w-lg rounded-3xl border border-sky-500/30 bg-black/80 px-5 pt-4 pb-5 shadow-[0_0_40px_rgba(56,189,248,0.15),0_0_80px_rgba(56,189,248,0.1)]"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.4 }}
+      transition={{ duration: 0.8, ease: [0.22, 0.8, 0.35, 1] }}
+    >
+      <div className="flex items-center justify-between text-[9px] text-zinc-500">
+        <span className="rounded-full bg-zinc-900 px-2 py-0.5 text-[8px] uppercase tracking-[0.2em] text-zinc-300">
+          Build → Optimize → Ship
+        </span>
+        <span className="flex items-center gap-1">
+          <Zap className="h-3 w-3 text-sky-400" />
+          <span>Flux Engine</span>
+        </span>
+      </div>
+
+      <div className="mt-3 grid grid-cols-[1.1fr_minmax(0,1fr)] gap-3">
+        <div className="relative h-20 rounded-2xl border border-zinc-800 bg-zinc-950/80 px-3 py-2.5">
+          <div className="flex items-center justify-between text-[9px] text-zinc-400">
+            <span>Geometry</span>
+            <span className="rounded-full bg-zinc-900 px-1.5 py-0.5 text-[8px] text-zinc-300">
+              Instanced
+            </span>
+          </div>
+          <div className="mt-2.5 space-y-2">
+            {progressItems.map((item, i) => (
+              <div
+                key={item.label}
+                className="flex items-center justify-between text-[9px]"
+              >
+                <span className="text-zinc-400">{item.label}</span>
+                <span className="flex items-center gap-1">
+                  <span className="h-1.5 w-14 overflow-hidden rounded-full bg-zinc-800">
+                    <motion.span
+                      className="block h-full rounded-full bg-sky-400 shadow-[0_0_10px_rgba(56,189,248,0.7)]"
+                      initial={{ width: "0%" }}
+                      animate={{
+                        width: [
+                          "0%",
+                          item.finalWidth,
+                          `${parseInt(item.finalWidth) - 5}%`,
+                          item.finalWidth
+                        ]
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        delay: i * 0.4,
+                        repeat: Infinity,
+                        repeatDelay: 2.5,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                    />
+                  </span>
+                  <span className="text-[8px] text-zinc-500">{item.reduction}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative h-20 rounded-2xl border border-zinc-800 bg-zinc-950/80 px-3 py-2.5">
+          <div className="flex items-center justify-between text-[9px] text-zinc-400">
+            <span>Runtime</span>
+            <span className="text-[8px] text-emerald-400">
+              Ready
+            </span>
+          </div>
+          <div className="mt-2.5 space-y-1.5 text-[9px] text-zinc-300">
+            <motion.div
+              className="flex items-center justify-between"
+              initial={{ opacity: 0.5 }}
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 2.5, repeat: Infinity, delay: 0 }}
+            >
+              <span>FPS</span>
+              <span className="text-emerald-400">120</span>
+            </motion.div>
+            <motion.div
+              className="flex items-center justify-between"
+              initial={{ opacity: 0.5 }}
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 2.5, repeat: Infinity, delay: 1.2 }}
+            >
+              <span>Payload</span>
+              <span className="text-zinc-400">-85%</span>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      <motion.div
+        className="mt-3 flex w-full items-center justify-between rounded-full border border-sky-500/40 bg-sky-500/10 px-3 py-1.5 text-[9px] uppercase tracking-[0.22em] text-sky-200"
+        animate={{
+          boxShadow: [
+            "0 0 0 rgba(56,189,248,0)",
+            "0 0 22px rgba(56,189,248,0.5)",
+            "0 0 0 rgba(56,189,248,0)",
+          ],
+        }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <span className="flex items-center gap-2">
+          <Cpu className="h-3 w-3" />
+          Auto optimized
+        </span>
+        <span className="text-[8px] text-sky-100/80">Zero downtime</span>
+      </motion.div>
+    </motion.div>
   )
 }
