@@ -1,35 +1,35 @@
 export const FEATURES = [
   {
     id: "multiplayer",
-    title: "Multiplayer by Default",
+    title: "Secure by Design",
     description:
-      "Work together in real-time. See cursors, share states, and comment in 3D.",
+      "Blockchain needs trust. Cardano J.A.R.V.I.S ensures every action, from key creation to payments, is executed inside a fully isolated, verifiable environment.",
     bullets: [
-      "Live cursor tracking",
-      "Threaded spatial comments",
-      "Version history & rollback",
+      "No private keys ever leave the signing layer",
+      "Tamper-proof execution with audit-ready logs",
+      "Hardware-grade wallet isolation",
     ],
   },
   {
     id: "production",
-    title: "Optimized for Production",
+    title: "AI-Driven Automation",
     description:
-      "Automatically optimize meshes, textures, and lighting for runtime.",
+      "Let your blockchain assistant think for you. J.A.R.V.I.S understands natural language and converts it into safe, deterministic Cardano operations..",
     bullets: [
-      "Instanced geometry",
-      "KTX2 textures",
-      "Baked lighting performance",
+      "NLP → Cardano CLI abstraction",
+      "Smart decision routing using LangGraph",
+      "Automatic fee calculation & validation",
     ],
   },
   {
     id: "multiplayer",
-    title: "Multiplayer by Default",
+    title: "Voice-Native Experience",
     description:
-      "Work together in real-time. See cursors, share states, and comment in 3D.",
+      "Interact with Cardano the way you speak. No CLI, no complexity — just commands that feel human.",
     bullets: [
-      "Live cursor tracking",
-      "Threaded spatial comments",
-      "Version history & rollback",
+      "Real-time speech-to-intent mapping",
+      "Voice-triggered wallet management",
+      "Seamless execution on preprod testnet",
     ],
   },
 ]

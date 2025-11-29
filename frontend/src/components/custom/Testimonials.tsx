@@ -19,36 +19,36 @@ type MetricTestimonial = {
 
 const METRIC_TESTIMONIALS: MetricTestimonial[] = [
   {
-    metric: "12",
-    metricSuffix: "x",
+    metric: "98",
+    metricSuffix: "%",
     accent: "orange",
     headline:
-      "Increase in transaction throughput after migrating to Nebula L2 rollups.",
+      "Reduction in manual wallet operations during testing.",
     quote:
-      "We needed a scalable infrastructure that didn't compromise on decentralization. Nebula delivered exactly that. Our gas fees dropped by 90% overnight while maintaining instant finality.",
+      "We replaced our entire QA pipeline with J.A.R.V.I.S automation. Mnemonics, keys, balances, transactions — everything is now handled autonomously with near-zero human involvement.",
     name: "Elena Rodriguez",
     role: "Lead Protocol Eng, Uniswap",
     initials: "ER",
   },
   {
-    metric: "50",
-    metricSuffix: "ms",
+    metric: "3.2",
+    metricSuffix: "x",
     accent: "red",
-    headline: "Latency achieved for cross-chain message propagation.",
+    headline: "Faster contract interaction & query execution.",
     quote:
-      "The speed of Nebula's bridge infrastructure is unmatched. We can now settle transactions across multiple rollups almost instantaneously, a game changer for our users.",
+      "Fetching contract data used to take multiple tools and scripts. J.A.R.V.I.S now parses, retrieves, and validates everything in one flow — it completely streamlined our dev environment.",
     name: "Sarah Jenkins",
     role: "PM, Optimism",
     initials: "SJ",
   },
   {
-    metric: "99",
-    metricSuffix: "%",
+    metric: "0.4",
+    metricSuffix: "s",
     accent: "blue",
     headline:
-      "Uptime guaranteed with our decentralized sequencer network.",
+      "Average time to generate & validate a full transaction.",
     quote:
-      "Migrating our DEX to Nebula's rollup infrastructure was seamless. We've seen zero downtime in 18 months of operation, even during peak network congestion.",
+      "The agent-based workflow is game-changing. Our dApp can now build, sign, and broadcast transactions without touching the CLI. It's faster than any in-house scripts we've ever built.",
     name: "James Wu",
     role: "Core Dev, Arbitrum",
     initials: "JW",
@@ -193,22 +193,19 @@ export function Testimonials() {
             <div className="relative flex items-baseline gap-4">
               <div className="flex items-baseline gap-1">
                 <span className="text-5xl font-semibold tracking-tight text-white">
-                  14
+                  120
                 </span>
                 <span className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-                  ms
+                  x
                 </span>
               </div>
               <p className="text-sm sm:text-base text-zinc-200">
-                Global latency reduction on edge nodes.
+                Faster testnet automation for developers.
               </p>
             </div>
 
             <p className="relative mt-8 text-sm sm:text-base leading-relaxed text-zinc-300">
-              &quot;From branding to execution, the Nebula API suite is
-              flawless. The latency on our oracle updates dropped
-              significantly, giving us a competitive edge in high-frequency
-              markets.&quot;
+              &quot;.J.A.R.V.I.S removed 90% of our manual wallet ops. Creating addresses, signing TXs, querying balances — everything is instant now. Our developer velocity skyrocketed.&quot;
             </p>
 
             <div className="relative mt-8 flex items-center justify-between">
@@ -241,9 +238,7 @@ export function Testimonials() {
                   </div>
                 </div>
                 <p className="text-sm leading-relaxed text-zinc-300">
-                  &quot;Their animation work took our product videos to the next
-                  level. The team truly understands user experience and
-                  storytelling.&quot;
+                  &quot;The voice automation blew our minds. Saying ‘send 5 ADA to Treasury’ and watching it craft the full transaction safely — that’s the future of blockchain UX.&quot;
                 </p>
                 <div className="mt-6 flex items-center gap-3">
                   <Avatar className="h-8 w-8 border border-white/10">
@@ -272,9 +267,7 @@ export function Testimonials() {
                   </div>
                 </div>
                 <p className="text-sm leading-relaxed text-zinc-800">
-                  &quot;The team nailed our MVP design with a fast turnaround
-                  and incredible attention to detail. The final product felt
-                  polished and professional.&quot;
+                  &quot;Their architecture around DID-secured payments is the cleanest implementation I’ve seen. The agent handles identity, signing, and orchestration with zero friction.&quot;
                 </p>
                 <div className="mt-6 flex items-center justify-between">
                   <div className="flex items-center gap-3">
