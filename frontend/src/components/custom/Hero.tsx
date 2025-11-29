@@ -4,8 +4,10 @@ import '@/components/customCSS/border-button.css'
 import { ArrowRight } from "lucide-react";
 import { motion, useMotionValue, useTransform, animate, type Variants } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero({ show, showTiles }: { show: boolean; showTiles: boolean }) {
+    const navigate = useNavigate();
     const [startTileAnimation, setStartTileAnimation] = useState(false)
 
     useEffect(() => {
@@ -102,7 +104,7 @@ export default function Hero({ show, showTiles }: { show: boolean; showTiles: bo
                 </motion.span>
 
                 <motion.div variants={itemVariants}>
-                    <Button className="shiny-cta mt-10 font-light">
+                    <Button className="shiny-cta mt-10 font-light" onClick={() => navigate('/chat')}>
                         START JARVIS <ArrowRight/>
                     </Button>
                 </motion.div>

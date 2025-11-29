@@ -1,61 +1,64 @@
-import { useEffect, useRef } from "react";
-import type { Tempmsg } from "./Chat";
-
-import {
-  ChatContainerRoot,
-  ChatContainerContent,
-  ChatContainerScrollAnchor,
-} from "./ui/chat-container";
-
-import { Message, MessageContent } from "./ui/message";
-// Markdown is unused here because MessageContent handles markdown rendering
-import { ScrollButton } from "./ui/scroll-button"; // <-- Add this
+import { motion } from "framer-motion";
+import { type Tempmsg } from "./Chat";
+import { User, Sparkles } from "lucide-react";
 
 export default function MessageList({ messages }: { messages: Tempmsg[] }) {
-  const bottomRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "instant" });
-  }, [messages]);
-
   return (
-    <ChatContainerRoot className="flex-1 px-6 py-6 relative">
-
-      <ChatContainerContent className="space-y-6 max-w-3xl mx-auto">
-
-        {messages.length === 0 ? (
-          <div className="h-[60vh] flex flex-col items-center justify-center text-center text-muted-foreground">
-            <div className="w-12 h-12 rounded-xl bg-gray-700/60 flex items-center justify-center mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6 text-gray-300">
-                <path d="M12 2.5l2.3 4.7 5.2.8-3.8 3.7.9 5.2L12 15.9l-4.6 2.4.9-5.2L4.5 8l5.2-.8L12 2.5z" fill="currentColor" opacity="0.14" />
-                <path d="M12 4.2l1.6 3.2 3.5.5-2.6 2.5.6 3.4L12 13.4l-3.1 1.6.6-3.4L6.9 7.9l3.5-.5L12 4.2z" fill="currentColor" />
-              </svg>
-            </div>
-            <h2 className="text-lg font-semibold mb-2">Start a conversation</h2>
-            <p className="max-w-lg text-sm">
-              Send a message to begin chatting. I'm here to help with anything you need.
-            </p>
-          </div>
-          ) : (
-          messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+    <div className="flex flex-col gap-6 p-8 max-w-4xl mx-auto">
+      {messages.map((msg, idx) => (
+        <motion.div
+          key={msg.id}
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{
+            duration: 0.4,
+            delay: idx * 0.05,
+            ease: [0.22, 0.8, 0.35, 1],
+          }}
+          className={`flex gap-4 items-start ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+        >
+          {msg.role === "assistant" && (
+            <motion.div
+              className="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500/20 to-orange-600/10 border border-orange-500/30 mt-0.5"
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ duration: 0.2 }}
             >
-              <Message className="max-w-[80%]">
-                <MessageContent markdown>
-                  {msg.content}
-                </MessageContent>
-              </Message>
+              <Sparkles className="w-5 h-5 text-orange-400" />
+            </motion.div>
+          )}
+
+          <motion.div
+            className={`
+              max-w-[70%] rounded-2xl px-5 py-4
+              ${msg.role === "user"
+                ? "bg-gradient-to-br from-orange-600/70 to-orange-700/60 text-white shadow-[0_8px_32px_rgba(251,146,60,0.25)]"
+                : "bg-zinc-900/80 text-zinc-100 border border-zinc-800/50 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+              }
+            `}
+            whileHover={{ scale: 1.01 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="relative">
+              {msg.role === "assistant" && (
+                <div className="absolute -top-2 -left-2 w-2 h-2 rounded-full bg-orange-500/50 blur-sm" />
+              )}
+              <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
+                {msg.content}
+              </p>
             </div>
-          ))
-        )}
+          </motion.div>
 
-        <ChatContainerScrollAnchor ref={bottomRef} />
-      </ChatContainerContent>
-
-      {/* FLOATING SCROLL BUTTON */}
-  <ScrollButton />
-    </ChatContainerRoot>
+          {msg.role === "user" && (
+            <motion.div
+              className="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-700/50 mt-0.5"
+              whileHover={{ scale: 1.1, rotate: -5 }}
+              transition={{ duration: 0.2 }}
+            >
+              <User className="w-5 h-5 text-zinc-400" />
+            </motion.div>
+          )}
+        </motion.div>
+      ))}
+    </div>
   );
 }
