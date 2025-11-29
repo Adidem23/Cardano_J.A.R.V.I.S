@@ -1,0 +1,15 @@
+pydantic
+requests
+python-dotenv
+fastapi
+pyautogui
+opencv-python
+langchain
+langchain-core
+langgraph
+langchain-google-genai
+uvicorn
+motor
+pyscreeze
+fastmcp
+langchain-mcp-adapters
