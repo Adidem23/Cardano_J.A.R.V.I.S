@@ -1,8 +1,11 @@
 import { useState, useRef } from "react";
+import ChatImage from "../assets/chat6.jpeg";
+import RenameImage from "../assets/rename.jpeg";
+import DeleteImage from "../assets/Delete.jpeg";
 import MessageList from "./MessageList";
 import PromptInput from "./PromptInput";
 
-export type Message = {
+export type Tempmsg = {
   id: string;
   role: "user" | "assistant";
   content: string;
@@ -11,7 +14,7 @@ export type Message = {
 export type ChatSession = {
   id: string;
   title: string;
-  messages: Message[];
+  messages: Tempmsg[];
 };
 
 export default function Chat() {
@@ -50,32 +53,32 @@ export default function Chat() {
 
   // Delete Chat
   const handleDelete = (id: string) => {
-  setSessions(prev => {
-    const updated = prev.filter(s => s.id !== id);
+    setSessions(prev => {
+      const updated = prev.filter(s => s.id !== id);
 
-    // If no sessions left → create a new one
-    if (updated.length === 0) {
-      const fresh = {
-        id: crypto.randomUUID(),
-        title: "New Chat",
-        messages: []
-      };
-      setCurrentSessionId(fresh.id);
-      return [fresh];
-    }
+      // If no sessions left → create a new one
+      if (updated.length === 0) {
+        const fresh = {
+          id: crypto.randomUUID(),
+          title: "New Chat",
+          messages: []
+        };
+        setCurrentSessionId(fresh.id);
+        return [fresh];
+      }
 
-    // If deleting the currently open chat → switch to the first remaining
-    if (id === currentSessionId) {
-      setCurrentSessionId(updated[0].id);
-    }
+      // If deleting the currently open chat → switch to the first remaining
+      if (id === currentSessionId) {
+        setCurrentSessionId(updated[0].id);
+      }
 
-    return updated;
-  });
-};
+      return updated;
+    });
+  };
 
 
-  // Send Message + Auto Assistant Reply
-  const handleSend = (msg: Message) => {
+  // Send Tempmsg + Auto Assistant Reply
+  const handleSend = (msg: Tempmsg) => {
     // Duplicate guard: skip if same content sent for this session within 2s
     const sig = `${currentSessionId}::${msg.content}`;
     const last = recentSendsRef.current.get(sig) ?? 0;
@@ -90,16 +93,16 @@ export default function Chat() {
       prev.map(session =>
         session.id === currentSessionId
           ? {
-              ...session,
-              title:
-                session.messages.length === 0
-                  ? msg.content.slice(0, 20) + "..."
-                  : session.title,
-              messages:
-                session.messages.length > 0 && session.messages[session.messages.length - 1].content === msg.content
-                  ? session.messages
-                  : [...session.messages, msg]
-            }
+            ...session,
+            title:
+              session.messages.length === 0
+                ? msg.content.slice(0, 20) + "..."
+                : session.title,
+            messages:
+              session.messages.length > 0 && session.messages[session.messages.length - 1].content === msg.content
+                ? session.messages
+                : [...session.messages, msg]
+          }
           : session
       )
     );
@@ -110,19 +113,19 @@ export default function Chat() {
         prev.map(session =>
           session.id === currentSessionId
             ? {
-                ...session,
-                messages:
-                  session.messages.length > 0 && session.messages[session.messages.length - 1].role === "assistant" && session.messages[session.messages.length - 1].content === `You said: ${msg.content}`
-                    ? session.messages
-                    : [
-                        ...session.messages,
-                        {
-                          id: crypto.randomUUID(),
-                          role: "assistant",
-                          content: `You said: ${msg.content}`
-                        }
-                      ]
-              }
+              ...session,
+              messages:
+                session.messages.length > 0 && session.messages[session.messages.length - 1].role === "assistant" && session.messages[session.messages.length - 1].content === `You said: ${msg.content}`
+                  ? session.messages
+                  : [
+                    ...session.messages,
+                    {
+                      id: crypto.randomUUID(),
+                      role: "assistant",
+                      content: `You said: ${msg.content}`
+                    }
+                  ]
+            }
             : session
         )
       );
@@ -133,54 +136,72 @@ export default function Chat() {
     <div className="flex h-screen">
 
       {/* LEFT SIDEBAR */}
-      <div className="w-72 bg-sidebar text-sidebar-foreground p-4 space-y-4 border-r border-sidebar-border flex flex-col">
-        <div className="flex items-center justify-between mb-2">
+      {/* <div className="w-72 bg-sidebar text-sidebar-foreground p-4 space-y-4 border-r border-sidebar-border flex flex-col "> */}
+
+
+
+
+
+      <div className="w-72 bg-[#111113] text-gray-200 p-4 flex flex-col border-r border-gray-800">
+
+        {/* TOP ITEMS */}
+        <div className="space-y-1 mb-4">
           <div>
-            <h1 className="text-lg font-semibold">Harox</h1>
-            <p className="text-xs text-sidebar-accent-foreground">Your assistant</p>
+            <h1 className="text-lg font-semibold">J.A.R.V.I.S</h1>
           </div>
+
           <button
             onClick={handleNewChat}
-            className="inline-flex items-center gap-2 bg-sidebar-primary text-sidebar-primary-foreground px-3 py-1.5 rounded-md"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-[#ffffff10] transition"
           >
-            + New
+            <img src={ChatImage} alt="new chat" className="w-6 h-6 rounded-sm object-cover" />
+            <span className="text-sm">New chat</span>
           </button>
+
+
+
+
+
+
+
         </div>
 
-        <div className="mb-3">
-          <input
-            type="search"
-            placeholder="Search chats..."
-            className="w-full bg-sidebar-border/30 placeholder:text-sidebar-accent-foreground px-3 py-2 rounded-md text-sm outline-none"
-            onChange={() => {}}
-          />
+        {/* DIVIDER */}
+        <div className="text-xs text-gray-400 mt-2 mb-1 px-2">
+          Your chats
         </div>
 
-        <div className="flex-1 overflow-y-auto space-y-2">
+        {/* CHAT LIST */}
+        <div className="flex-1 overflow-y-auto space-y-1 pr-1">
+
           {sessions.map((session) => (
             <div
               key={session.id}
               onClick={() => setCurrentSessionId(session.id)}
-              className={`group p-3 rounded-lg flex items-center justify-between cursor-pointer transition-all duration-150 ${
-                session.id === currentSessionId
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground shadow"
-                  : "hover:bg-sidebar-accent/10"
-              }`}
+              className={`
+          group flex items-center justify-between px-3 py-2 rounded-md cursor-pointer
+          transition relative
+          ${session.id === currentSessionId
+                  ? "bg-[#ffffff10] text-white border-l-2 border-white/80"
+                  : "hover:bg-[#ffffff10]"
+                }
+        `}
             >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-md bg-sidebar-accent flex items-center justify-center text-sm">💬</div>
-                <div className="text-sm truncate max-w-[10rem]">{session.title}</div>
+              {/* Chat title */}
+              <div className="truncate max-w-[10rem] text-sm">
+                {session.title}
               </div>
+
+              {/* Buttons */}
               <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     handleRename(session.id);
                   }}
-                  title="Rename chat"
-                  className="text-xs px-2 rounded bg-transparent hover:bg-sidebar-border/40"
+                  className="text-xs hover:text-white"
                 >
-                  ✏️
+                  <img src={RenameImage} alt="rename" className="w-5 h-5 rounded-sm object-cover" />
                 </button>
 
                 <button
@@ -188,16 +209,17 @@ export default function Chat() {
                     e.stopPropagation();
                     handleDelete(session.id);
                   }}
-                  title="Delete chat"
-                  className="text-xs px-2 rounded bg-transparent hover:bg-red-600/60"
+                  className="text-xs hover:text-red-400"
                 >
-                  🗑
+                  <img src={DeleteImage} alt="delete" className="w-5 h-5 rounded-sm object-cover" />
                 </button>
               </div>
             </div>
           ))}
+
         </div>
       </div>
+
 
       {/* RIGHT SIDE — CHAT WINDOW */}
       <div className="flex flex-col flex-1 bg-[#0F1116]">
@@ -207,10 +229,10 @@ export default function Chat() {
           <MessageList messages={currentSession.messages} />
         </div>
 
-  {/* INPUT BAR */}
-<div className="w-full flex justify-center pb-4 px-4">
-  <PromptInput onSend={handleSend} />
-</div>
+        {/* INPUT BAR */}
+        <div className="w-full flex justify-center pb-4 px-4">
+          <PromptInput onSend={handleSend} />
+        </div>
 
 
       </div>

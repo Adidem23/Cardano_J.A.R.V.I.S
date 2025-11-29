@@ -14,10 +14,10 @@ import { ArrowUp, Square, Mic } from "lucide-react";
 
 
 import { useState } from "react";
-import type { Message } from "./Chat";
+import type { Tempmsg } from "./Chat";
 
 interface Props {
-  onSend: (msg: Message) => void;
+  onSend: (msg: Tempmsg) => void;
 }
 
 export default function PromptInput({ onSend }: Props) {
@@ -79,17 +79,17 @@ export default function PromptInput({ onSend }: Props) {
       className="w-full max-w-(--breakpoint-md)"
     >
       <PromptInputTextarea
-  placeholder="Send a message..."
-  value={text}
-  onChange={(e) => setText(e.target.value)}
-  onKeyDown={(e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  }}
+        placeholder="Send a message..."
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+          }
+        }}
 
-  />
+      />
 
       <PromptInputActions className="justify-end pt-2 flex gap-2 items-center">
         {/* MIC BUTTON */}
@@ -98,9 +98,8 @@ export default function PromptInput({ onSend }: Props) {
             variant="outline"
             size="icon"
             onClick={startListening}
-            className={`h-8 w-8 rounded-full transition ${
-              isListening ? "bg-red-500 text-white" : ""
-            }`}
+            className={`h-8 w-8 rounded-full transition ${isListening ? "bg-red-500 text-white" : ""
+              }`}
           >
             <Mic className="size-4" />
           </Button>
