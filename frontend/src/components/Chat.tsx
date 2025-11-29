@@ -19,13 +19,11 @@ export default function Chat() {
     { id: crypto.randomUUID(), title: "New Chat", messages: [] }
   ]);
 
-  // Prevent rapid duplicate sends: record recent (sessionId:content) signatures
   const recentSendsRef = useRef<Map<string, number>>(new Map());
 
   const [currentSessionId, setCurrentSessionId] = useState(sessions[0].id);
   const currentSession = sessions.find(s => s.id === currentSessionId)!;
 
-  // Create New Chat
   const handleNewChat = () => {
     const newSession = {
       id: crypto.randomUUID(),
@@ -36,7 +34,6 @@ export default function Chat() {
     setCurrentSessionId(newSession.id);
   };
 
-  // Rename Chat
   const handleRename = (id: string) => {
     const newName = prompt("Enter new chat name:");
     if (!newName) return;
@@ -48,12 +45,10 @@ export default function Chat() {
     );
   };
 
-  // Delete Chat
   const handleDelete = (id: string) => {
   setSessions(prev => {
     const updated = prev.filter(s => s.id !== id);
 
-    // If no sessions left → create a new one
     if (updated.length === 0) {
       const fresh = {
         id: crypto.randomUUID(),
@@ -64,7 +59,6 @@ export default function Chat() {
       return [fresh];
     }
 
-    // If deleting the currently open chat → switch to the first remaining
     if (id === currentSessionId) {
       setCurrentSessionId(updated[0].id);
     }

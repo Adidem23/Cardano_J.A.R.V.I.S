@@ -5,10 +5,10 @@ import { motion } from "framer-motion"
 export function Navbar({ show }: { show: boolean }) {
   return (
     <motion.header 
-      className="w-full flex justify-center pt-6 px-4"
+      className="sticky top-0 z-50 w-full flex justify-center pt-6 px-4"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: show ? 1 : 0, y: show ? 0 : -20 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
     >
       <nav className="flex w-full max-w-3xl items-center justify-between rounded-full border border-zinc-200/70 bg-white/90 px-6 py-2 shadow-[0_0_0_1px_rgba(255,255,255,0.6),0_24px_80px_rgba(0,0,0,0.55)] backdrop-blur-md dark:border-white/10 dark:bg-zinc-950/80 dark:shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_24px_80px_rgba(0,0,0,0.85)]">
         <div className="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 font-sans">
