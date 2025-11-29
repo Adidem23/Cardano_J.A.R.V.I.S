@@ -1,6 +1,6 @@
 import { Send, Mic, Square } from "lucide-react";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { Tempmsg } from "./Chat";
 import axios from "axios";
 
@@ -12,16 +12,25 @@ export default function PromptInput({ onSend }: Props) {
   const [text, setText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const BACKEND_URL = "http://localhost:8000/processUserQuery";
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${Math.min(
+        textareaRef.current.scrollHeight,
+        200
+      )}px`;
+    }
+  }, [text]);
+
   const handleSend = async () => {
-    if (!text.trim()) return;
-    if (isLoading) return; // Prevent duplicate clicks
+    if (!text.trim() || isLoading) return;
 
     const userText = text.trim();
 
-    // Push USER message immediately
     const userMsg: Tempmsg = {
       id: crypto.randomUUID(),
       role: "user",
@@ -56,8 +65,7 @@ export default function PromptInput({ onSend }: Props) {
       onSend({
         id: crypto.randomUUID(),
         role: "assistant",
-        content: `Error: ${error?.response?.data?.error || error.message || "Request failed."
-          }`,
+        content: `Error: ${error?.response?.data?.error || error.message || "Request failed."}`,
       });
     } finally {
       setIsLoading(false);
@@ -99,9 +107,10 @@ export default function PromptInput({ onSend }: Props) {
       }}
       className="w-full max-w-3xl"
     >
-      <div className="relative flex items-center gap-3">
+      <div className="relative flex items-end">
         <div className="flex-1 relative">
           <textarea
+            ref={textareaRef}
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => {
@@ -112,50 +121,50 @@ export default function PromptInput({ onSend }: Props) {
             }}
             placeholder="Ask J.A.R.V.I.S anything..."
             rows={1}
-            className="w-full rounded-2xl border border-zinc-800/50 bg-zinc-900/50 backdrop-blur-xl px-6 py-4 pr-14 text-[15px] text-zinc-100 placeholder-zinc-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-zinc-900/70 focus:ring-2 focus:ring-orange-500/20 shadow-[0_8px_32px_rgba(0,0,0,0.4)] resize-none min-h-[56px] max-h-[200px]"
-            style={{
-              height: "auto",
-              overflowY: text.split("\n").length > 3 ? "auto" : "hidden",
-            }}
+            className="w-full rounded-2xl border border-zinc-800/50 bg-zinc-900/50 backdrop-blur-xl px-6 py-4 pr-24 text-[15px] text-zinc-100 placeholder-zinc-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-zinc-900/70 focus:ring-2 focus:ring-orange-500/20 shadow-[0_8px_32px_rgba(0,0,0,0.4)] resize-none min-h-[56px] max-h-[200px] overflow-y-auto"
           />
-          <motion.button
-            type="button"
-            onClick={startListening}
-            className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-colors ${isListening
-                ? "bg-red-500/20 border border-red-500/50"
-                : "bg-zinc-800/50 hover:bg-zinc-800"
+          <div className="absolute right-3 bottom-3 flex items-center gap-2">
+            <motion.button
+              type="button"
+              onClick={startListening}
+              className={`p-2 rounded-lg transition-colors ${
+                isListening
+                  ? "bg-red-500/20 border border-red-500/50"
+                  : "bg-zinc-800/50 hover:bg-zinc-800"
               }`}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <Mic
-              className={`w-5 h-5 ${isListening ? "text-red-400" : "text-zinc-400"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Mic
+                className={`w-4 h-4 ${
+                  isListening ? "text-red-400" : "text-zinc-400"
                 }`}
-            />
-          </motion.button>
-        </div>
+              />
+            </motion.button>
 
-        <motion.button
-          type="submit"
-          disabled={!text.trim() || isLoading}
-          className={`
-            flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-200
-            ${text.trim() && !isLoading
-              ? "bg-gradient-to-br from-orange-600/80 to-orange-700/70 hover:from-orange-600/90 hover:to-orange-700/80 shadow-[0_8px_32px_rgba(251,146,60,0.3)]"
-              : "bg-zinc-800/50 cursor-not-allowed"}
-          `}
-          whileHover={text.trim() && !isLoading ? { scale: 1.05 } : {}}
-          whileTap={text.trim() && !isLoading ? { scale: 0.95 } : {}}
-        >
-          {isLoading ? (
-            <Square className="w-5 h-5 text-white fill-current" />
-          ) : (
-            <Send
-              className={`w-5 h-5 ${text.trim() ? "text-white" : "text-zinc-600"
-                }`}
-            />
-          )}
-        </motion.button>
+            <motion.button
+              type="submit"
+              disabled={!text.trim() || isLoading}
+              className={`p-2 rounded-lg transition-all duration-200 ${
+                text.trim() && !isLoading
+                  ? "bg-gradient-to-br from-orange-600/80 to-orange-700/70 hover:from-orange-600/90 hover:to-orange-700/80"
+                  : "bg-zinc-800/50 cursor-not-allowed"
+              }`}
+              whileHover={text.trim() && !isLoading ? { scale: 1.1 } : {}}
+              whileTap={text.trim() && !isLoading ? { scale: 0.9 } : {}}
+            >
+              {isLoading ? (
+                <Square className="w-4 h-4 text-white fill-current" />
+              ) : (
+                <Send
+                  className={`w-4 h-4 ${
+                    text.trim() ? "text-white" : "text-zinc-600"
+                  }`}
+                />
+              )}
+            </motion.button>
+          </div>
+        </div>
       </div>
 
       <div className="mt-3 flex items-center justify-between px-2">

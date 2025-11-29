@@ -5,23 +5,23 @@ import { LandingPage } from '@/pages/LandingPage'
 import Chat from './components/Chat'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-function App() {
+function LandingPageWithLenis() {
+  return (
+    <ReactLenis root options={{ lerp: 0.05, syncTouch: true }}>
+      <LandingPage />
+    </ReactLenis>
+  )
+}
 
+function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <ReactLenis root options={
-        {
-          lerp: 0.05,
-          syncTouch: true,
-        }
-      }>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/chat" element={<Chat />} />
-          </Routes>
-        </BrowserRouter>
-      </ReactLenis>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPageWithLenis />} />
+          <Route path="/chat" element={<Chat />} />
+        </Routes>
+      </BrowserRouter>
     </ThemeProvider>
   )
 }
