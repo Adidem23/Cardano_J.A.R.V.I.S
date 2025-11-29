@@ -1,0 +1,31 @@
+.prompt-input {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #ffffff;
+  border-top: 1px solid #ddd;
+}
+
+.prompt-input input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  color: #000;          
+  background: #fff;     
+}
+
+.prompt-input button {
+  padding: 10px 16px;
+  background: #ddd;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #000;         
+}
+
+.prompt-input button:hover {
+  background: #ccc;
+}
