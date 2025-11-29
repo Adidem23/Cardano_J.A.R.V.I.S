@@ -41,11 +41,19 @@ export const LandingPage = () => {
         onTileAnimationComplete={handleTileAnimationComplete}
       />
       <Navbar show={showNavbar} />
-      <Hero show={showHero} showTiles={showTiles} />
-      <FeatureShowcase/>
-      <Testimonials/>
+      <div id="hero">
+        <Hero show={showHero} showTiles={showTiles} />
+      </div>
+      <div id="features">
+        <FeatureShowcase/>
+      </div>
+      <div id="testimonials">
+        <Testimonials/>
+      </div>
       <CTA/>
-      <Footer/>
+      <div id="footer">
+        <Footer/>
+      </div>
     </div>
   )
 }

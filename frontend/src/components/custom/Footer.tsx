@@ -1,10 +1,30 @@
 import { motion } from "motion/react"
 import { useState } from "react"
 import { Mic, Brain, Workflow, CheckCircle } from "lucide-react"
+import { useNavigate, useLocation } from "react-router-dom"
 
 export function Footer() {
+  const navigate = useNavigate()
+  const location = useLocation()
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isHovering, setIsHovering] = useState(false)
+
+  const scrollToSection = (sectionId: string) => {
+    if (location.pathname !== '/') {
+      navigate('/', { replace: true })
+      setTimeout(() => {
+        const element = document.getElementById(sectionId)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }, 100)
+    } else {
+      const element = document.getElementById(sectionId)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
+  }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -70,20 +90,32 @@ export function Footer() {
           <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-40 bg-[radial-gradient(ellipse_at_top,rgba(194,65,12,0.15)_0%,rgba(194,65,12,0.08)_40%,transparent_70%)] blur-xl" />
 
           <div className="flex flex-col gap-6">
-            <a className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500 transition-colors hover:text-white">
+            <button 
+              onClick={() => scrollToSection('hero')}
+              className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500 transition-colors hover:text-white text-left"
+            >
               Home
-            </a>
-            <a className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500 transition-colors hover:text-white">
+            </button>
+            <button 
+              onClick={() => scrollToSection('features')}
+              className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500 transition-colors hover:text-white text-left"
+            >
               About Us
-            </a>
-            <a className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500 transition-colors hover:text-white">
+            </button>
+            <button 
+              onClick={() => navigate('/chat')}
+              className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500 transition-colors hover:text-white text-left"
+            >
               Join Now
-            </a>
+            </button>
           </div>
           <div className="flex flex-col gap-6">
-            <a className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500 transition-colors hover:text-white">
+            <button 
+              onClick={() => scrollToSection('footer')}
+              className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500 transition-colors hover:text-white text-left"
+            >
               Contact Us
-            </a>
+            </button>
             <a className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500 transition-colors hover:text-white">
               Instagram
             </a>

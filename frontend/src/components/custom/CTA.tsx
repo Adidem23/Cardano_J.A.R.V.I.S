@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Plus, Minus } from "lucide-react";
 import Spline from '@splinetool/react-spline'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { TextEffect } from "../motion-primitives/TextEffect";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
@@ -58,6 +59,7 @@ const ExpandableCard = ({ title, description, isOpenByDefault, index }: Expandab
 };
 
 const CTA = () => {
+    const navigate = useNavigate();
     const containerRef = useRef(null);
     const leftColumnRef = useRef(null);
     const rightCardRef = useRef(null);
@@ -156,6 +158,7 @@ const CTA = () => {
                                             whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(251, 146, 60, 0.3)" }}
                                             whileTap={{ scale: 0.95 }}
                                             transition={{ duration: 0.2 }}
+                                            onClick={() => navigate('/chat')}
                                         >
                                             Get Started
                                         </motion.button>
