@@ -215,7 +215,7 @@ export default function Chat() {
                   Your AI-powered voice assistant for blockchain automation. Start a conversation to manage your tasks, execute smart contracts, and more.
                 </p>
                 <div className="grid grid-cols-1 gap-3 text-left">
-                  {["Check my wallet balance", "Deploy a new smart contract", "Execute a transaction on Cardano"].map((suggestion, i) => (
+                  {["J.A.R.V.I.S , Open my Wallet", "Hii !! Who are you ??", "Show my all transactions"].map((suggestion, i) => (
                     <motion.button
                       key={i}
                       initial={{ opacity: 0, x: -20 }}
