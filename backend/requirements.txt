@@ -13,3 +13,7 @@ motor
 pyscreeze
 fastmcp
 langchain-mcp-adapters
+numpy
+pillow
+pyperclip
+pytesseract
