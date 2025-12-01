@@ -38,6 +38,7 @@ async def process_langchain_response(userQuery:requetsedQuery):
          
         server_script_path = "./MCP/Server.py"
         command = "python"
+        
         server_params = StdioServerParameters(
                 command=command,
                 args=[server_script_path],

@@ -4,6 +4,14 @@ import time
 import pyperclip
 import os
 import requests
+import json
+import tempfile
+import shutil
+from pathlib import Path
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from langchain_mcp_adapters.tools import load_mcp_tools
+import asyncio
 
 
 mcp = FastMCP("Cardano_J.A.R.V.I.S")
@@ -483,6 +491,270 @@ def SearchTransactionForAddress(wallet_address):
 
 # Open Explorer Ends ---------
 
+# Fetch Proposals Start -------------------
+
+def fetchAllProposals():
+    headers = {
+    "accept": "application/json",
+    "content-type": "application/json"
+    }
+
+    All_Proposals=requests.get("https://preprod.koios.rest/api/v1/proposal_list",headers=headers)
+
+    return All_Proposals
+
+# Fetch Proposals Ends --------------------
+
+# Setup meshWalletSetup Starts -------------------
+
+PROJECT_DIR = r"C:\Users\hp\Desktop\mesh-wallet-project"  
+NPM_SCRIPT_NAME = "wallet"
+NPM_SCRIPT_COMMAND = "tsx wallet.ts"
+
+pyautogui.PAUSE = 0.8
+pyautogui.FAILSAFE = True
+TYPING_INTERVAL = 0.04   
+SLEEP_AFTER_OPEN_VSCODE = 6.0
+SLEEP_AFTER_CMD_PALETTE = 1.0
+NODE_MODULES_WAIT_TIMEOUT = 300
+CHECK_INTERVAL = 1.0
+PACKAGE_JSON_WAIT_TIMEOUT = 30
+
+
+POST_NODE_MODULES_DELAY = 5.0  
+POST_MESHSK_DELAY = 5.0         
+WALLET_TS_CONTENT = """import { MeshWallet } from "@meshsdk/core";
+
+async function main() {
+  const mnemonic = MeshWallet.brew();
+  console.log("Your mnemonic phrases are:", mnemonic);
+
+  const wallet = new MeshWallet({
+    networkId: 0,
+    key: {
+      type: "mnemonic",
+      words: mnemonic as string[],
+    },
+  });
+
+  const address = await wallet.getChangeAddress();
+  console.log("Your wallet address is:", address);
+}
+
+main();
+
+"""
+def abort(msg: str):
+    print("ERROR:", msg)
+    raise SystemExit(msg)
+
+def check_prereqs():
+    if shutil.which("npm") is None:
+        print("WARNING: 'npm' not found in PATH. Terminal commands will still be typed in VS Code but will fail if npm isn't available.")
+    if shutil.which("code") is None:
+        print("NOTE: 'code' command not found in PATH. Script will still send the Run dialog command; consider installing 'code' command in PATH for reliability.")
+
+def create_and_verify_dir(path_str: str) -> Path:
+    p = Path(path_str)
+    if p.exists() and not p.is_dir():
+        abort(f"Path exists and is not a directory: {p}")
+    if not p.exists():
+        print(f"Creating project directory: {p}")
+        p.mkdir(parents=True, exist_ok=True)
+    else:
+        print(f"Using existing directory: {p}")
+    return p.resolve()
+
+def atomic_write_text(path: Path, text: str):
+    tmp_fd, tmp_path = tempfile.mkstemp(dir=str(path.parent))
+    try:
+        with os.fdopen(tmp_fd, "w", encoding="utf-8") as f:
+            f.write(text)
+            f.flush()
+            os.fsync(f.fileno())
+        Path(tmp_path).replace(path)
+    except Exception:
+        try:
+            os.remove(tmp_path)
+        except Exception:
+            pass
+        raise
+    print(f"Wrote: {path}")
+
+def open_vscode_run(project_path: Path):
+    """Open VS Code for the project folder using Win+R -> code "<path>"."""
+    print("Opening VS Code via Run dialog: code \"<path>\"")
+    pyautogui.hotkey("win", "r")
+    time.sleep(0.6)
+    cmd = f'code "{str(project_path)}"'
+    pyautogui.typewrite(cmd, interval=TYPING_INTERVAL)
+    pyautogui.press("enter")
+    time.sleep(SLEEP_AFTER_OPEN_VSCODE)
+    print("VS Code open command sent — waiting for window to load.")
+
+def open_new_terminal_in_vscode(wait_after=1.0):
+    """
+    Use Command Palette to create a NEW integrated terminal so we get a fresh terminal.
+    Sequence:
+      Ctrl+Shift+P -> type "Terminal: Create New Terminal" -> Enter
+    """
+    print("Opening Command Palette to create a NEW terminal in VS Code...")
+    pyautogui.hotkey("ctrl", "shift", "p")
+    time.sleep(0.6)
+    pyautogui.typewrite("Terminal: Create New Terminal", interval=TYPING_INTERVAL)
+    time.sleep(SLEEP_AFTER_CMD_PALETTE)
+    pyautogui.press("enter")
+    time.sleep(wait_after)
+    print("Requested a new terminal via Command Palette.")
+
+def focus_terminal():
+    """Ensure terminal pane is focused (toggle with Ctrl+` to be robust)."""
+    pyautogui.hotkey("ctrl", "`")
+    time.sleep(0.4)
+
+def type_and_enter(cmd: str):
+    print(f"Typing command: {cmd}")
+    pyautogui.typewrite(cmd, interval=TYPING_INTERVAL)
+    pyautogui.press("enter")
+
+def wait_for_file(project_path: Path, filename: str, timeout: float) -> bool:
+    target = project_path / filename
+    print(f"Waiting up to {timeout}s for {filename} ...")
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        if target.exists():
+            print(f"Found {filename}")
+            return True
+        time.sleep(CHECK_INTERVAL)
+    print(f"Timeout waiting for {filename}")
+    return False
+
+def wait_for_node_modules(project_path: Path, timeout: float) -> bool:
+    nm = project_path / "node_modules"
+    print(f"Waiting up to {timeout}s for node_modules to appear...")
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        if nm.exists() and any(nm.iterdir()):
+            print("node_modules present.")
+            return True
+        time.sleep(CHECK_INTERVAL)
+    print("Timeout waiting for node_modules.")
+    return False
+
+
+
+def run_flow_using_vscode_terminal(project_path: Path):
+    """
+    Executes npm commands visually in the new VS Code terminal and polls filesystem to detect completion.
+    Adds fixed delays AFTER detecting node_modules and @meshsdk as requested.
+    """
+    
+    open_new_terminal_in_vscode(wait_after=1.0)
+    time.sleep(0.6)
+
+    
+    type_and_enter("npm init -y")
+    
+    if not wait_for_file(project_path, "package.json", PACKAGE_JSON_WAIT_TIMEOUT):
+        print("Warning: package.json did not appear in time after npm init -y. Proceeding anyway.")
+    time.sleep(0.8)
+
+    
+    type_and_enter("npm install")
+    
+    time.sleep(0.8)
+
+ 
+    type_and_enter("npm install tsx @meshsdk/core")
+   
+    msdk_path = project_path / "node_modules" / "@meshsdk"
+    t0 = time.time()
+    found = False
+    while time.time() - t0 < NODE_MODULES_WAIT_TIMEOUT:
+        if msdk_path.exists() and any(msdk_path.iterdir()):
+            found = True
+            break
+        if (project_path / "node_modules").exists() and any((project_path / "node_modules").iterdir()):
+            found = True
+            break
+        time.sleep(CHECK_INTERVAL)
+    if found:
+        print(f"@meshsdk detected! Waiting {POST_MESHSK_DELAY} seconds before continuing...")
+        time.sleep(POST_MESHSK_DELAY)  
+    else:
+        print("Warning: @meshsdk not detected in time; proceeding anyway.")
+    time.sleep(0.8)
+
+
+
+def write_files_and_update_pkg(project_path: Path):
+   
+    wallet_path = project_path / "wallet.ts"
+    atomic_write_text(wallet_path, WALLET_TS_CONTENT)
+
+    pkg_path = project_path / "package.json"
+    if not pkg_path.exists():
+        print("package.json not found when updating scripts; creating minimal package.json.")
+        pkg = {"name": project_path.name, "version": "1.0.0", "scripts": {NPM_SCRIPT_NAME: NPM_SCRIPT_COMMAND}}
+        atomic_write_text(pkg_path, json.dumps(pkg, indent=2))
+    else:
+        try:
+            pkg = json.loads(pkg_path.read_text(encoding="utf-8"))
+        except Exception:
+            pkg = {}
+        pkg.setdefault("scripts", {})[NPM_SCRIPT_NAME] = NPM_SCRIPT_COMMAND
+        atomic_write_text(pkg_path, json.dumps(pkg, indent=2))
+    print("wallet.ts written and package.json updated with script.")
+
+def open_terminal_and_run_final_script(script_name: str):
+   
+    open_new_terminal_in_vscode(wait_after=0.8)
+
+    focus_terminal()
+    time.sleep(0.5)
+
+    pyautogui.typewrite(f"npm run {script_name}")
+    print(f"Triggered npm run {script_name} in VS Code terminal.")
+
+
+def WriteWalletCreationCode():
+    check_prereqs()
+
+    project_path = create_and_verify_dir(PROJECT_DIR)
+
+    open_vscode_run(project_path)
+
+    run_flow_using_vscode_terminal(project_path)
+
+    write_files_and_update_pkg(project_path)
+
+    open_terminal_and_run_final_script(NPM_SCRIPT_NAME)
+
+    return {"Msg":"Done Writing"}
+
+
+# Setup meshWalletsSetup Ends ---------------
+
+
+# List Masumi Agents Starts -----------------------------
+
+server_script_path = "D:\hp\Dev\Cardano_J.A.R.V.I.S\masumi\masumi-mcp-server\server.py"
+command = "python"
+        
+server_params = StdioServerParameters(
+                command=command,
+                args=[server_script_path]
+)
+
+async def runMasumiMcp(): 
+    async with stdio_client(server_params) as (read, write):
+        async with ClientSession(read, write) as session:
+                            await session.initialize()
+                            resp= await session.call_tool(name="list_agents")
+                            return resp
+                            
+# List Masumi Agent Ends ------------
+
 
 @mcp.tool()
 def openUserWallet():
@@ -503,5 +775,17 @@ def AvailablePools():
 @mcp.tool()
 def SearchTransactions(wallletAddr:str):
    return SearchTransactionForAddress(wallletAddr)
+
+@mcp.tool()
+def fetchandSummarizeProposals():
+    return fetchAllProposals()
+
+@mcp.tool()
+def walletCreationCode():
+    return WriteWalletCreationCode()
+
+@mcp.tool()
+async def getMasumiAgents():
+    return await runMasumiMcp();
 
 mcp.run(transport="stdio")

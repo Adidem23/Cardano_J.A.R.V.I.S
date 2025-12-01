@@ -20,6 +20,9 @@ export default function PromptInput({ onSend }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const autoSendTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Guard to prevent race / double-send (synchronous)
+  const isSendingRef = useRef(false);
+
   const BACKEND_URL = "http://localhost:8000/processUserQuery";
 
   useEffect(() => {
@@ -47,6 +50,10 @@ export default function PromptInput({ onSend }: Props) {
   const handleSend = async () => {
     if (!text.trim() || isLoading) return;
 
+    // Synchronous guard: prevents nearly simultaneous triggers from both proceeding
+    if (isSendingRef.current) return;
+    isSendingRef.current = true;
+
     if (autoSendTimerRef.current) {
       clearTimeout(autoSendTimerRef.current);
       autoSendTimerRef.current = null;
@@ -69,7 +76,7 @@ export default function PromptInput({ onSend }: Props) {
       const response = await fetch(BACKEND_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: userText }),
+        body: JSON.stringify({ actualQueryString : userText }),
       });
 
       if (!response.ok) {
@@ -80,7 +87,7 @@ export default function PromptInput({ onSend }: Props) {
       const assistantMsg: Tempmsg = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: data.response || "No response from server.",
+        content: data.response || data[0]?.text || data || "No response from server.",
       };
       onSend(assistantMsg);
     } catch (error: any) {
@@ -92,6 +99,7 @@ export default function PromptInput({ onSend }: Props) {
       onSend(errorMsg);
     } finally {
       setIsLoading(false);
+      isSendingRef.current = false; // release guard
     }
   };
 
@@ -143,7 +151,7 @@ export default function PromptInput({ onSend }: Props) {
     <PromptInputKit
       value={text}
       onValueChange={setText}
-      onSubmit={handleSend}
+      onSubmit={handleSend}      // keep form submit handler
       isLoading={isLoading}
       className="w-full max-w-3xl"
     >
@@ -160,7 +168,7 @@ export default function PromptInput({ onSend }: Props) {
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
+            e.preventDefault(); // prevents form submit duplication
             handleSend();
           }
         }}
@@ -169,6 +177,7 @@ export default function PromptInput({ onSend }: Props) {
         {isListening ? (
           <PromptInputAction tooltip="Stop recording">
             <button
+              type="button"                 // <- important: do not submit the form
               onClick={stopListening}
               className="flex items-center justify-center w-9 h-9 rounded-lg bg-red-500/20 hover:bg-red-500/30 transition-colors"
             >
@@ -178,6 +187,7 @@ export default function PromptInput({ onSend }: Props) {
         ) : (
           <PromptInputAction tooltip="Voice input">
             <button
+              type="button"                 // <- important
               onClick={startListening}
               className="flex items-center justify-center w-9 h-9 rounded-lg bg-orange-500/20 hover:bg-orange-500/30 transition-colors"
             >
@@ -186,8 +196,13 @@ export default function PromptInput({ onSend }: Props) {
           </PromptInputAction>
         )}
         <PromptInputAction tooltip="Send message">
+          {/* choose one approach:
+              A) keep onClick and use type="button"  OR
+              B) use type="submit" and remove onClick (rely on PromptInputKit onSubmit).
+             Here we use type="submit" and let PromptInputKit handle onSubmit.
+          */}
           <button
-            onClick={handleSend}
+            type="submit"                 // <- submit the form exactly once
             disabled={!text.trim() || isLoading}
             className="flex items-center justify-center w-9 h-9 rounded-lg bg-orange-500 hover:bg-orange-600 disabled:bg-zinc-800 disabled:cursor-not-allowed transition-colors"
           >
